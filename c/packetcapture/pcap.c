@@ -65,7 +65,7 @@ int InitRawSocket(char *device, int promiscFlag, int ipOnly) {
   return (soc);
 }
 
-int main(int argc, char *argc[], char *envp[]) {
+int main(int argc, char *argv[], char *envp[]) {
   int soc, size;
   u_char buf[65535];
 

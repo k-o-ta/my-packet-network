@@ -27,7 +27,7 @@ int AnalyzeArp(u_char *data, int size) {
   int lest;
   struct ether_arp *arp;
 
-  ptr = date;
+  ptr = data;
   lest = size;
 
   if (lest < sizeof(struct ether_arp)) {
@@ -154,7 +154,7 @@ int AnalyzeIp(u_char *data, int size) {
     lest -= optionLen;
   }
 
-  if (checkIpchecksum(iphdr, option, optionLen) == 0) {
+  if (checkIPchecksum(iphdr, option, optionLen) == 0) {
     fprintf(stderr, "bad ip checksum\n");
     return (-1);
   }
@@ -180,11 +180,11 @@ int AnalyzeIp(u_char *data, int size) {
     struct udphdr *udphdr;
     udphdr = (struct udphdr *)ptr;
     len = ntohs(iphdr->tot_len) - iphdr->ihl * 4;
-    if (udphdr->checksumeck != 0 && checkIPDATAchecksum(iphdr, ptr, len) == 0) {
+    if (udphdr->check != 0 && checkIPDATAchecksum(iphdr, ptr, len) == 0) {
       fprintf(stderr, "bad udp checksum\n");
       return (-1);
     }
-    AnalyseUdp(ptr, lest);
+    AnalyzeUdp(ptr, lest);
   }
   return (0);
 }
@@ -195,18 +195,18 @@ int AnalyzeIpv6(u_char *data, int size) {
   struct ip6_hdr *ip6;
   int len;
 
-  prt = data;
+  ptr = data;
   lest = size;
 
   if (lest < sizeof(struct ip6_hdr)) {
     fprintf(stderr, "lest(%d)< sizeof(struct ip6_hdr)\n", lest);
     return (-1);
   }
-  ip6 = (struct ih6_hdr *)ptr;
+  ip6 = (struct ip6_hdr *)ptr;
   ptr += sizeof(struct ip6_hdr);
   lest -= sizeof(struct ip6_hdr);
 
-  PirntIp6Header(ip6, stdout);
+  PrintIp6Header(ip6, stdout);
 
   if (ip6->ip6_nxt == IPPROTO_ICMPV6) {
     len = ntohs(ip6->ip6_plen);
@@ -236,12 +236,12 @@ int AnalyzeIpv6(u_char *data, int size) {
 int AnalyzePacket(u_char *data, int size) {
   u_char *ptr;
   int lest;
-  struct ether_hdr *eh;
+  struct ether_header *eh;
 
-  prt = data;
+  ptr = data;
   lest = size;
 
-  if (lest < sizeof(struct ether_hdr)) {
+  if (lest < sizeof(struct ether_header)) {
     fprintf(stderr, "lest(%d)< sizeof(struct ether_header)\n", lest);
     return (-1);
   }

@@ -240,7 +240,7 @@ int PrintIcmp(struct icmp *icmp, FILE *fp) {
 
   if (icmp->icmp_type == 0 || icmp->icmp_type == 8) {
     fprintf(fp, "icmp_id=%u,", ntohs(icmp->icmp_id));
-    fprintf(fp, "icmp_seq=%u\n", nthohs(icmp->icmp_seq));
+    fprintf(fp, "icmp_seq=%u\n", ntohs(icmp->icmp_seq));
   }
   return (0);
 }
