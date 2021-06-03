@@ -84,6 +84,7 @@ int main(int argc, char *argv[], char *envp[]) {
       perror("read");
     } else {
       AnalyzePacket(buf, size);
+      fprintf(stdout, "\n");
     }
   }
   close(soc);

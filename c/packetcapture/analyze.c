@@ -155,7 +155,7 @@ int AnalyzeIp(u_char *data, int size) {
   }
 
   if (checkIPchecksum(iphdr, option, optionLen) == 0) {
-    fprintf(stderr, "bad ip checksum\n");
+    fprintf(stderr, "\e[31mbad ip checksum\e[0m\n");
     return (-1);
   }
 
@@ -164,15 +164,15 @@ int AnalyzeIp(u_char *data, int size) {
   if (iphdr->protocol == IPPROTO_ICMP) {
     len = ntohs(iphdr->tot_len) - iphdr->ihl * 4;
     sum = checksum(ptr, len);
-    if (sum != 9 && sum != 0xFFFF) {
-      fprintf(stderr, "bad icmp checksum\n");
+    if (sum != 0 && sum != 0xFFFF) {
+      fprintf(stderr, "\e[31mbad icmp checksum\e[0m\n");
       return (-1);
     }
     AnalyzeIcmp(ptr, lest);
   } else if (iphdr->protocol == IPPROTO_TCP) {
     len = ntohs(iphdr->tot_len) - iphdr->ihl * 4;
     if (checkIPDATAchecksum(iphdr, ptr, len) == 0) {
-      fprintf(stderr, "bad tcp checksum\n");
+      fprintf(stderr, "\e[31mbad tcp checksum\e[0m\n");
       return (-1);
     }
     AnalyzeTcp(ptr, lest);
@@ -181,7 +181,7 @@ int AnalyzeIp(u_char *data, int size) {
     udphdr = (struct udphdr *)ptr;
     len = ntohs(iphdr->tot_len) - iphdr->ihl * 4;
     if (udphdr->check != 0 && checkIPDATAchecksum(iphdr, ptr, len) == 0) {
-      fprintf(stderr, "bad udp checksum\n");
+      fprintf(stderr, "\e[31mbad udp checksum\e[0m\n");
       return (-1);
     }
     AnalyzeUdp(ptr, lest);
@@ -211,21 +211,21 @@ int AnalyzeIpv6(u_char *data, int size) {
   if (ip6->ip6_nxt == IPPROTO_ICMPV6) {
     len = ntohs(ip6->ip6_plen);
     if (checkIP6DATAchecksum(ip6, ptr, len) == 0) {
-      fprintf(stderr, "bad icmp6 checksum\n");
+      fprintf(stderr, "\e[31mbad icmp6 checksum\e[0m\n");
       return (-1);
     }
     AnalyzeIcmp6(ptr, lest);
   } else if (ip6->ip6_nxt == IPPROTO_TCP) {
     len = ntohs(ip6->ip6_plen);
     if (checkIP6DATAchecksum(ip6, ptr, len) == 0) {
-      fprintf(stderr, "bad tcp6 checksum\n");
+      fprintf(stderr, "\e[31mbad tcp6 checksum\e[0m\n");
       return (-1);
     }
     AnalyzeTcp(ptr, lest);
   } else if (ip6->ip6_nxt == IPPROTO_UDP) {
     len = ntohs(ip6->ip6_plen);
     if (checkIP6DATAchecksum(ip6, ptr, len) == 0) {
-      fprintf(stderr, "bad upd6 checksum\n");
+      fprintf(stderr, "\e[31mbad udp6 checksum\e[0m\n");
       return (-1);
     }
     AnalyzeUdp(ptr, lest);
@@ -262,5 +262,6 @@ int AnalyzePacket(u_char *data, int size) {
     PrintEtherHeader(eh, stdout);
     AnalyzeIpv6(ptr, lest);
   }
+  fprintf(stdout, "\n");
   return (0);
 }

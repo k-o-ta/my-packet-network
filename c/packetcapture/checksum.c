@@ -18,6 +18,7 @@
 struct pseudo_ip {
   struct in_addr ip_src;
   struct in_addr ip_dst;
+  unsigned char dummy;
   unsigned char ip_p;
   unsigned short ip_len;
 };
@@ -69,7 +70,6 @@ u_int16_t checksum2(u_char *data1, int len1, u_char *data2, int len2) {
   for (c = len1; c > 1; c -= 2) {
     sum += (*ptr);
     if (sum & 0x80000000) {
-      sum = (sum & 0xFFFF) + (sum >> 16);
       sum = (sum & 0xFFFF) + (sum >> 16);
     }
     ptr++;
@@ -135,7 +135,7 @@ int checkIPDATAchecksum(struct iphdr *iphdr, unsigned char *data, int len) {
 
   memset(&p_ip, 0, sizeof(struct pseudo_ip));
   p_ip.ip_src.s_addr = iphdr->saddr;
-  p_ip.ip_dst.s_addr = iphdr->saddr;
+  p_ip.ip_dst.s_addr = iphdr->daddr;
   p_ip.ip_p = iphdr->protocol;
   p_ip.ip_len = htons(len);
   sum = checksum2((unsigned char *)&p_ip, sizeof(struct pseudo_ip), data, len);

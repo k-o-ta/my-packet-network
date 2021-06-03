@@ -153,7 +153,7 @@ int PrintIpHeader(struct iphdr *iphdr, u_char *option, int optionLen,
   char buf[80];
 
   fprintf(fp, "ip--------------\n");
-  fprintf(fp, "varsion=%u,", iphdr->check);
+  fprintf(fp, "varsion=%u,", iphdr->version);
   fprintf(fp, "ihl=%u,", iphdr->ihl);
   fprintf(fp, "tos=%x,", iphdr->tos);
   fprintf(fp, "tot_len=%u,", ntohs(iphdr->tot_len));
